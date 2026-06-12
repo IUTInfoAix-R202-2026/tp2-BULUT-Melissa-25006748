@@ -1,5 +1,7 @@
 package fr.univ_amu.iut.exercice4;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -86,10 +88,25 @@ public class AireTriangle {
     // 3. Créer output avec Bindings.format() :
     //    "P1(%s,%s) P2(%s,%s) P3(%s,%s) => aire = %s"
     //    en passant x1, y1, x2, y2, x3, y3, area
+
+    NumberBinding determinant =
+        x1.multiply(y2)
+            .subtract(x1.multiply(y3))
+            .add(x2.multiply(y3))
+            .subtract(x2.multiply(y1))
+            .add(x3.multiply(y1))
+            .subtract(x3.multiply(y2));
+    area.bind(
+        Bindings.when(determinant.greaterThanOrEqualTo(0))
+            .then(determinant.divide(2.0))
+            .otherwise(determinant.negate().divide(2.0)));
+    output =
+        Bindings.format("P1(%s,%s) P2(%s,%s) P3(%s,%s) => aire = %s", x1, y1, x2, y2, x3, y3, area);
   }
 
   void printResult() {
     // TODO exercice 4 : afficher output.get() sur System.out.
+    System.out.println(output.get());
   }
 
   // --- Setters de points ---
